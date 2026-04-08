@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>نور السنة | Noor Al-Sunnah</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:rgba(201,168,76,0.13);
+  --deep:#080c10;--surface:#0f1419;--surface2:#161d26;--surface3:#1e2733;
+  --border:rgba(201,168,76,0.15);--border-hover:rgba(201,168,76,0.4);
+  --text:#ffffff;--text-muted:#7a6e58;--text-dim:#4a4438;
+  --green:#4caf7d;--red:#e05a5a;--blue:#5a9ae0;--orange:#e09a5a;
+}
+/* LIGHT MODE */
+body.light{
+  --deep:#f0ebe0;--surface:#faf6ee;--surface2:#ede5d0;--surface3:#e0d8c4;
+  --border:rgba(160,120,40,0.22);--border-hover:rgba(160,120,40,0.5);
+  --text:#111111;--text-muted:#8a7a5a;--text-dim:#b0a080;
+}
+body.light nav{ background:rgba(240,235,224,0.96) !important; }
+
+/* TEXT COLOR OVERRIDES */
+body.tc-white{ --text:#ffffff; }
+body.tc-black{ --text:#111111; }
+body.tc-gold{ --text:#c9a84c; }
+body.tc-beige{ --text:#ede0c4; }
+body.light.tc-white{ --text:#ffffff; }
+body.light.tc-black{ --text:#111111; }
+body.light.tc-gold{ --text:#8a6010; }
+body.light.tc-beige{ --text:#5a4a2a; }
+
+/* Force --text everywhere */
+body, body *:not(.bismillah):not(.card-book):not(.ai-intro h2):not(.badge):not(.grade-badge):not(.card-narrator) {
+  color:inherit;
+}
+body { color:var(--text); }
+body h1,body h2,body h3,body p,body .msg-bubble,
+body .hadith-arabic,body .hadith-english,body .hero-sub,
+body .quick-btn,body .nav-tab,body .book-tab,
+body .card-chapter,.hadith-card { color:var(--text); }
+body .bismillah { color:var(--gold) !important; }
+body .ai-intro h2,.card-book,.nav-logo { color:var(--gold) !important; }
+body .text-muted,.hadith-english,.status-bar,.footer,.feedback-title {
+  color:var(--text-muted) !important;
+}
+
+/* SETTINGS PANEL */
+.settings-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:7px 12px;font-size:0.82rem;color:var(--text-muted);cursor:pointer;transition:all 0.2s;}
+.settings-btn:hover{border-color:var(--gold);color:var(--gold);}
+.settings-panel{
+  position:fixed;top:60px;left:20px;z-index:200;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:20px;width:240px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  display:none;animation:fadeUp 0.2s ease;
+}
+.settings-panel.open{display:block;}
+.settings-section{margin-bottom:16px;}
+.settings-label{font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;display:block;}
+.theme-btns{display:flex;gap:8px;}
+.theme-btn{
+  flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);
+  font-family:'Cairo',sans-serif;font-size:0.8rem;cursor:pointer;
+  background:var(--surface2);color:var(--text-muted);transition:all 0.2s;
+}
+.theme-btn:hover,.theme-btn.active{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.swatch:hover,.swatch.active{border-color:var(--gold);transform:scale(1.15);}
+.swatch.sw-white{background:#ffffff;border-color:#ccc;}
+.swatch.sw-black{background:#111111;}
+.swatch.sw-gold{background:#c9a84c;}
+.swatch.sw-beige{background:#ede0c4;}
+
+/* WHATSAPP BUTTON */
+.wa-section{
+  max-width:760px;margin:0 auto;padding:20px 20px 50px;
+  border-top:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.wa-title{font-size:0.83rem;color:var(--text-muted);text-align:center;}
+.wa-btn{
+  width:64px;height:64px;border-radius:16px;
+  background:#25D366;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(37,211,102,0.35);
+  transition:all 0.2s;
+}
+.wa-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(37,211,102,0.5);}
+.wa-btn svg{width:36px;height:36px;fill:#ffffff;}
+
+/* FEEDBACK SECTION */
+.feedback-section{
+  max-width:760px;margin:0 auto;padding:0 20px 20px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.feedback-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;
+  font-family:'Cairo',sans-serif;font-size:0.86rem;
+  color:var(--text);outline:none;resize:none;
+  transition:border-color 0.2s;direction:rtl;
+}
+.feedback-input::placeholder{color:var(--text-dim);}
+.feedback-input:focus{border-color:var(--gold);}
+.feedback-sent{text-align:center;padding:8px;color:var(--green);font-size:0.85rem;display:none;}
+
+
+/* SETTINGS PANEL */
+.settings-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:7px 12px;font-size:0.82rem;color:var(--text-muted);cursor:pointer;transition:all 0.2s;}
+.settings-btn:hover{border-color:var(--gold);color:var(--gold);}
+.settings-panel{
+  position:fixed;top:60px;left:20px;z-index:200;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:20px;width:240px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  display:none;animation:fadeUp 0.2s ease;
+}
+.settings-panel.open{display:block;}
+.settings-section{margin-bottom:16px;}
+.settings-label{font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;display:block;}
+.theme-btns{display:flex;gap:8px;}
+.theme-btn{
+  flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);
+  font-family:'Cairo',sans-serif;font-size:0.8rem;cursor:pointer;
+  background:var(--surface2);color:var(--text-muted);transition:all 0.2s;
+}
+.theme-btn:hover,.theme-btn.active{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap;}
+.swatch{
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:all 0.2s;
+}
+.swatch:hover,.swatch.active{border-color:var(--gold);transform:scale(1.15);}
+.swatch.gold{background:#c9a84c;}
+.swatch.white{background:#f5f5f5;border-color:var(--border);}
+.swatch.beige{background:#ede0c4;}
+.swatch.green{background:#4caf7d;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--deep);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 15% 10%,rgba(201,168,76,0.05) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 85% 90%,rgba(201,168,76,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(8,12,16,0.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:13px 24px;gap:12px;flex-wrap:wrap;}
+.nav-logo{font-family:'Amiri',serif;font-size:1.25rem;color:var(--gold-light);display:flex;align-items:center;gap:8px;}
+.nav-logo .dot{width:7px;height:7px;background:var(--gold);border-radius:50%;}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{background:none;border:none;font-family:'Cairo',sans-serif;font-size:0.82rem;color:var(--text-muted);cursor:pointer;padding:7px 14px;border-radius:8px;transition:all 0.2s;}
+.nav-tab:hover{color:var(--text);background:var(--surface2);}
+.nav-tab.active{color:var(--gold);background:var(--gold-dim);}
+
+/* HERO */
+.hero{text-align:center;padding:56px 20px 40px;border-bottom:1px solid var(--border);position:relative;z-index:1;}
+.bismillah{font-family:'Amiri',serif;font-size:clamp(1.1rem,2.5vw,1.55rem);color:var(--gold) !important;margin-bottom:24px;opacity:0;animation:fadeUp 0.8s ease forwards 0.1s;}
+.hero h1{font-family:'Amiri',serif;font-size:clamp(2.2rem,5vw,4rem);color:var(--text);line-height:1.2;opacity:0;animation:fadeUp 0.8s ease forwards 0.3s;}
+.hero-sub{font-size:0.88rem;color:var(--text-muted);margin-top:10px;font-weight:300;opacity:0;animation:fadeUp 0.8s ease forwards 0.5s;}
+.lang-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:7px 14px;font-family:'Cairo',sans-serif;font-size:0.82rem;color:var(--text-muted);cursor:pointer;transition:all 0.2s;}
+.lang-btn:hover{border-color:var(--gold);color:var(--gold);}
+.divider{display:flex;align-items:center;gap:14px;max-width:280px;margin:20px auto;opacity:0;animation:fadeUp 0.8s ease forwards 0.4s;}
+.divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.divider-line.r{background:linear-gradient(270deg,transparent,var(--gold));}
+.divider-diamond{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* PAGES */
+.page{display:none;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ── AI PAGE ── */
+.ai-section{max-width:760px;margin:0 auto;padding:36px 20px 60px;}
+.ai-intro{text-align:center;margin-bottom:22px;}
+.ai-intro h2{font-size:1.05rem;color:var(--gold);margin-bottom:5px;}
+.ai-intro p{font-size:0.83rem;color:var(--text-muted);}
+.quick-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px;}
+.quick-btn{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:7px 15px;font-family:'Cairo',sans-serif;font-size:0.79rem;color:var(--text-muted);cursor:pointer;transition:all 0.2s;}
+.quick-btn:hover{border-color:var(--gold);color:var(--gold-light);background:var(--gold-dim);}
+.chat-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;}
+.chat-messages{flex:1;padding:22px;display:flex;flex-direction:column;gap:14px;max-height:480px;overflow-y:auto;scroll-behavior:smooth;}
+.chat-messages::-webkit-scrollbar{width:3px;}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.msg{display:flex;gap:10px;animation:fadeUp 0.3s ease forwards;}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;border:1px solid var(--border);}
+.msg.ai .msg-avatar{background:var(--gold-dim);color:var(--gold);}
+.msg.user .msg-avatar{background:var(--surface3);color:var(--text-muted);}
+.msg-bubble{max-width:82%;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:13px 16px;font-size:0.88rem;line-height:1.85;}
+.msg.user .msg-bubble{background:var(--gold-dim);border-color:rgba(201,168,76,0.22);text-align:right;}
+.hadith-result{font-family:'Amiri',serif;font-size:1.12rem;line-height:2.1;color:var(--text);padding:12px;background:var(--surface);border-right:3px solid var(--gold);border-radius:8px;margin:10px 0;text-align:right;}
+.badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:0.73rem;font-weight:600;margin:4px 2px;}
+.badge.sahih{background:rgba(76,175,125,0.15);color:var(--green);border:1px solid rgba(76,175,125,0.3);}
+.badge.daif{background:rgba(224,90,90,0.15);color:var(--red);border:1px solid rgba(224,90,90,0.3);}
+.badge.hasan{background:rgba(90,154,224,0.15);color:var(--blue);border:1px solid rgba(90,154,224,0.3);}
+.badge.mawdoo{background:rgba(224,154,90,0.15);color:var(--orange);border:1px solid rgba(224,154,90,0.3);}
+.typing{display:flex;gap:5px;align-items:center;padding:2px 0;}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:0.4;animation:bounce 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:0.2s;}
+.typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-6px);opacity:1;}}
+.chat-input-wrap{padding:14px;border-top:1px solid var(--border);display:flex;gap:9px;background:var(--surface);}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:11px 15px;font-family:'Cairo',sans-serif;font-size:0.88rem;color:var(--text);outline:none;transition:border-color 0.2s;direction:rtl;resize:none;}
+.chat-input::placeholder{color:var(--text-dim);}
+.chat-input:focus{border-color:var(--gold);}
+.send-btn{background:var(--gold);border:none;border-radius:11px;padding:0 16px;cursor:pointer;font-size:1rem;transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.send-btn:hover{background:var(--gold-light);}
+.send-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* ── BROWSE PAGE ── */
+.browse-section{max-width:880px;margin:0 auto;padding:36px 20px 60px;}
+.browse-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.browse-top h2{font-size:1.05rem;color:var(--gold);}
+.search-wrap{position:relative;width:100%;max-width:380px;}
+.search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:10px 40px 10px 14px;font-family:'Cairo',sans-serif;font-size:0.86rem;color:var(--text);outline:none;transition:border-color 0.2s;direction:rtl;}
+.search-input::placeholder{color:var(--text-dim);}
+.search-input:focus{border-color:var(--gold);}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;font-size:0.85rem;}
+.book-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.book-tab{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 20px;font-family:'Cairo',sans-serif;font-size:0.84rem;color:var(--text-muted);cursor:pointer;transition:all 0.2s;}
+.book-tab:hover{border-color:var(--gold);color:var(--gold-light);}
+.book-tab.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold-light);}
+
+/* HADITH CARD */
+.hadith-list{display:flex;flex-direction:column;gap:14px;}
+.hadith-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;transition:all 0.25s;animation:fadeUp 0.4s ease forwards;opacity:0;}
+.hadith-card::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(180deg,var(--gold),transparent);opacity:0;transition:opacity 0.2s;}
+.hadith-card:hover{border-color:var(--border-hover);box-shadow:0 6px 28px rgba(0,0,0,0.28);}
+.hadith-card:hover::after{opacity:1;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.card-header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.card-num{font-size:0.72rem;color:var(--text-dim);background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:2px 9px;}
+.card-book{font-size:0.72rem;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(201,168,76,0.22);border-radius:7px;padding:2px 9px;}
+.card-chapter{font-size:0.72rem;color:var(--text-muted);padding:2px 0;}
+.grade-badge{font-size:0.72rem;font-weight:700;padding:3px 11px;border-radius:10px;}
+.grade-sahih{background:rgba(76,175,125,0.15);color:var(--green);border:1px solid rgba(76,175,125,0.28);}
+.grade-hasan{background:rgba(90,154,224,0.15);color:var(--blue);border:1px solid rgba(90,154,224,0.28);}
+.grade-daif{background:rgba(224,90,90,0.15);color:var(--red);border:1px solid rgba(224,90,90,0.28);}
+.grade-mawdoo{background:rgba(224,154,90,0.15);color:var(--orange);border:1px solid rgba(224,154,90,0.28);}
+.hadith-arabic{font-family:'Amiri',serif;font-size:clamp(1rem,2.2vw,1.22rem);line-height:2.2;color:var(--text);text-align:right;margin-bottom:12px;}
+.hadith-english{font-family:'Lora',serif;font-size:0.83rem;line-height:1.8;color:var(--text-muted);direction:ltr;text-align:left;padding-top:11px;border-top:1px solid var(--border);}
+.card-narrator{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:0.78rem;color:var(--gold-light);opacity:0.75;}
+.card-narrator span{color:var(--text-muted);}
+
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:7px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.skel-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:14px;}
+
+.load-more{display:block;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:13px;font-family:'Cairo',sans-serif;font-size:0.86rem;color:var(--text-muted);cursor:pointer;margin-top:18px;transition:all 0.2s;}
+.load-more:hover{border-color:var(--gold);color:var(--gold-light);}
+.load-more:disabled{opacity:0.4;cursor:not-allowed;}
+.empty{text-align:center;padding:50px 20px;color:var(--text-muted);}
+.empty-icon{font-size:2.2rem;margin-bottom:10px;opacity:0.3;}
+.status-bar{text-align:center;font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;}
+
+footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:var(--text-dim);font-size:0.76rem;position:relative;z-index:1;}
+footer span{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><div class="dot"></div>نور السنة</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('ai')" id="tab-ai">🤖 الذكاء الاصطناعي</button>
+    <button class="nav-tab" onclick="showPage('browse')" id="tab-browse">📚 تصفح الأحاديث</button>
+  </div>
+  <button class="settings-btn" onclick="toggleSettings()">🎨 المظهر</button>
+  <button class="lang-btn" onclick="toggleLang()" id="langBtn">EN</button>
+</nav>
+
+<!-- SETTINGS PANEL -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-section">
+    <span class="settings-label">الوضع</span>
+    <div class="theme-btns">
+      <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">🌙 داكن</button>
+      <button class="theme-btn" id="btn-light" onclick="setTheme('light')">☀️ فاتح</button>
+    </div>
+  </div>
+  <div class="settings-section">
+    <span class="settings-label">لون الكلام</span>
+    <div class="color-swatches">
+      <div class="swatch sw-white active" id="sw-white" title="أبيض" onclick="setTextColor('white',this)"></div>
+      <div class="swatch sw-black" id="sw-black" title="أسود" onclick="setTextColor('black',this)"></div>
+      <div class="swatch sw-gold" id="sw-gold" title="ذهبي" onclick="setTextColor('gold',this)"></div>
+      <div class="swatch sw-beige" id="sw-beige" title="بيج" onclick="setTextColor('beige',this)"></div>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+  <h1 id="hero-title">نور السنة النبوية</h1>
+  <div class="divider">
+    <div class="divider-line r"></div><div class="divider-diamond"></div><div class="divider-line"></div>
+  </div>
+  <p class="hero-sub" id="hero-sub">ابحث في الأحاديث النبوية بمساعدة الذكاء الاصطناعي</p>
+</div>
+
+<!-- AI PAGE -->
+<div class="page active" id="page-ai">
+  <div class="ai-section">
+    <div class="ai-intro">
+      <h2 id="ai-title">🤖 اسأل الذكاء الاصطناعي عن الأحاديث</h2>
+      <p id="ai-desc">تحقق من صحة حديث • أكمل حديثاً ناقصاً • ابحث بالمعنى • اعرف الراوي</p>
+    </div>
+    <div class="quick-btns">
+      <button class="quick-btn" id="qbtn1" onclick="quickAsk(QA[currentLang][0])">✅ <span id="qbtn1-txt">تحقق من حديث</span></button>
+      <button class="quick-btn" id="qbtn2" onclick="quickAsk(QA[currentLang][1])">📖 <span id="qbtn2-txt">أكمل حديثاً ناقصاً</span></button>
+      <button class="quick-btn" id="qbtn3" onclick="quickAsk(QA[currentLang][2])">🔍 <span id="qbtn3-txt">ابحث بالمعنى</span></button>
+      <button class="quick-btn" id="qbtn4" onclick="quickAsk(QA[currentLang][3])">👤 <span id="qbtn4-txt">الراوي والدرجة</span></button>
+    </div>
+    <div class="chat-box">
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg ai">
+          <div class="msg-avatar">🕌</div>
+          <div class="msg-bubble" id="welcome-msg">
+            السلام عليكم ورحمة الله! أنا مساعدك في الأحاديث النبوية. أقدر أساعدك في:<br><br>
+            • <b>التحقق</b> من صحة الحديث ودرجته<br>
+            • <b>إكمال</b> الحديث الناقص مع ذكر الراوي<br>
+            • <b>البحث بالمعنى</b> — أعطني الفكرة وأعطيك الحديث<br>
+            • <b>معرفة الراوي</b> وعن من روى
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-wrap">
+        <textarea class="chat-input" id="chatInput" rows="1" placeholder="اكتب سؤالك..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BROWSE PAGE -->
+<div class="page" id="page-browse">
+  <div class="browse-section">
+    <div class="browse-top">
+      <h2 id="browse-title">📚 تصفح الأحاديث</h2>
+      <div class="search-wrap">
+        <input class="search-input" id="searchInput" placeholder="ابحث في الأحاديث..." oninput="debounceSearch()"/>
+        <span class="search-icon">🔍</span>
+      </div>
+    </div>
+    <div class="book-tabs">
+      <button class="book-tab active" onclick="selectBook('bukhari')" id="btab-bukhari">📘 صحيح البخاري</button>
+      <button class="book-tab" onclick="selectBook('muslim')" id="btab-muslim">📗 صحيح مسلم</button>
+    </div>
+    <div class="status-bar" id="statusBar"></div>
+    <div class="hadith-list" id="hadithList"></div>
+    <button class="load-more" id="loadMoreBtn" onclick="loadMore()" style="display:none" data-ar="تحميل المزيد ▼" data-en="Load More ▼">تحميل المزيد ▼</button>
+  </div>
+</div>
+
+<!-- WHATSAPP CONTACT -->
+<div class="wa-section">
+  <p class="wa-title" id="wa-title">💬 اقتراحات أو مشاكل؟ راسلنا</p>
+  <div class="feedback-section">
+    <textarea class="feedback-input" id="feedbackInput" rows="3" placeholder="اكتب اقتراحك أو المشكلة هنا..."></textarea>
+    <div class="feedback-sent" id="feedbackSent">✅ جاري فتح واتساب...</div>
+  </div>
+  <button class="wa-btn" onclick="sendFeedback()" title="تواصل عبر واتساب">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </button>
+</div>
+
+<footer>
+  <span>نور السنة</span> • بيانات من <span>sunnah.com</span> • ذكاء اصطناعي بـ <span>Claude AI</span>
+</footer>
+
+<script>
+// ── FEEDBACK ──
+function sendFeedback(){
+  const msg = document.getElementById('feedbackInput').value.trim();
+  if(!msg) return;
+  const phone = '96550106490';
+  const text = encodeURIComponent('نور السنة - ' + (currentLang==='ar'?'رسالة':'Message') + ':\n' + msg);
+  document.getElementById('feedbackSent').style.display = 'block';
+  setTimeout(()=>{
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+    document.getElementById('feedbackInput').value = '';
+    document.getElementById('feedbackSent').style.display = 'none';
+  }, 800);
+}
+
+// ── LANGUAGE ──
+let currentLang = 'ar';
+const QA = {
+  ar: [
+    'هل حديث طلب العلم فريضة على كل مسلم صحيح؟ ومن رواه؟',
+    'أكمل هذا الحديث: إنما الأعمال بالنيات...',
+    'ما هو الحديث الذي يتحدث عن أهمية الصدق؟ وما درجته؟',
+    'من روى حديث المسلم من سلم المسلمون من لسانه ويده؟ وما درجته؟'
+  ],
+  en: [
+    'Is the hadith "Seeking knowledge is an obligation upon every Muslim" authentic?',
+    'Complete this hadith: "Actions are judged by intentions..."',
+    'What is the hadith about the importance of honesty? What is its grade?',
+    'Who narrated the hadith "A Muslim is one from whose tongue and hand Muslims are safe"?'
+  ]
+};
+const T = {
+  ar: {
+    'tab-ai': '🤖 الذكاء الاصطناعي',
+    'tab-browse': '📚 تصفح الأحاديث',
+    'hero-title': 'نور السنة النبوية',
+    'hero-sub': 'ابحث في الأحاديث النبوية بمساعدة الذكاء الاصطناعي',
+    'ai-title': '🤖 اسأل الذكاء الاصطناعي عن الأحاديث',
+    'ai-desc': 'تحقق من صحة حديث • أكمل حديثاً ناقصاً • ابحث بالمعنى • اعرف الراوي',
+    'browse-title': '📚 تصفح الأحاديث',
+    'btab-bukhari': '📘 صحيح البخاري',
+    'btab-muslim': '📗 صحيح مسلم',
+    'qbtn1-txt': 'تحقق من حديث',
+    'qbtn2-txt': 'أكمل حديثاً ناقصاً',
+    'qbtn3-txt': 'ابحث بالمعنى',
+    'qbtn4-txt': 'الراوي والدرجة',
+    'chat-placeholder': 'اكتب سؤالك...',
+    'search-placeholder': 'ابحث في الأحاديث...',
+    'load-more': 'تحميل المزيد ▼',
+    'welcome': `السلام عليكم ورحمة الله! أنا مساعدك في الأحاديث النبوية. أقدر أساعدك في:<br><br>
+      • <b>التحقق</b> من صحة الحديث ودرجته<br>
+      • <b>إكمال</b> الحديث الناقص مع ذكر الراوي<br>
+      • <b>البحث بالمعنى</b> — أعطني الفكرة وأعطيك الحديث<br>
+      • <b>معرفة الراوي</b> وعن من روى`,
+    'wa-title': '💬 اقتراحات أو مشاكل؟ راسلنا',
+    'feedback-placeholder': 'اكتب اقتراحك أو المشكلة هنا...',
+    lang: 'EN', dir: 'rtl'
+  },
+  en: {
+    'tab-ai': '🤖 AI Assistant',
+    'tab-browse': '📚 Browse Hadith',
+    'hero-title': 'Noor Al-Sunnah',
+    'hero-sub': 'Search the Prophetic Traditions with AI',
+    'ai-title': '🤖 Ask AI about Hadith',
+    'ai-desc': 'Verify a hadith • Complete an incomplete hadith • Search by meaning • Find the narrator',
+    'browse-title': '📚 Browse Hadith',
+    'btab-bukhari': '📘 Sahih Al-Bukhari',
+    'btab-muslim': '📗 Sahih Muslim',
+    'qbtn1-txt': 'Verify a hadith',
+    'qbtn2-txt': 'Complete a hadith',
+    'qbtn3-txt': 'Search by meaning',
+    'qbtn4-txt': 'Narrator & grade',
+    'chat-placeholder': 'Type your question...',
+    'search-placeholder': 'Search hadith...',
+    'load-more': 'Load More ▼',
+    'welcome': `Assalamu Alaikum! I'm your Hadith assistant. I can help you:<br><br>
+      • <b>Verify</b> the authenticity and grade of a hadith<br>
+      • <b>Complete</b> an incomplete hadith with narrator info<br>
+      • <b>Search by meaning</b> — describe it and I'll find it<br>
+      • <b>Find the narrator</b> and chain of transmission`,
+    'wa-title': '💬 Suggestions or issues? Contact us',
+    'feedback-placeholder': 'Write your suggestion or issue here...',
+    lang: 'عر', dir: 'ltr'
+  }
+};
+function toggleLang(){
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  applyLang();
+  localStorage.setItem('lang', currentLang);
+}
+function applyLang(){
+  const t = T[currentLang];
+  document.documentElement.dir = t.dir;
+  document.documentElement.lang = currentLang;
+  document.getElementById('langBtn').textContent = t.lang;
+  ['tab-ai','tab-browse','hero-title','hero-sub','ai-title','ai-desc',
+   'browse-title','btab-bukhari','btab-muslim',
+   'qbtn1-txt','qbtn2-txt','qbtn3-txt','qbtn4-txt',
+   'wa-title'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = t[id];
+  });
+  // welcome msg
+  const wm = document.getElementById('welcome-msg');
+  if(wm) wm.innerHTML = t['welcome'];
+  // load more btn
+  const lm = document.getElementById('loadMoreBtn');
+  if(lm) lm.textContent = t['load-more'];
+  // placeholders
+  const fi = document.getElementById('feedbackInput');
+  if(fi) fi.placeholder = t['feedback-placeholder'];
+  const ci = document.getElementById('chatInput');
+  if(ci) ci.placeholder = t['chat-placeholder'];
+  const si = document.getElementById('searchInput');
+  if(si) si.placeholder = t['search-placeholder'];
+}
+
+// ── SETTINGS ──
+function toggleSettings(){
+  const p = document.getElementById('settingsPanel');
+  p.classList.toggle('open');
+  document.addEventListener('click', closeOnOutside);
+}
+function closeOnOutside(e){
+  const p = document.getElementById('settingsPanel');
+  if(!p.contains(e.target) && !e.target.closest('.settings-btn')){
+    p.classList.remove('open');
+    document.removeEventListener('click', closeOnOutside);
+  }
+}
+function setTheme(t){
+  document.body.classList.toggle('light', t==='light');
+  document.getElementById('btn-dark').classList.toggle('active', t==='dark');
+  document.getElementById('btn-light').classList.toggle('active', t==='light');
+  // Auto set default text color per theme
+  if(t==='dark') setTextColor('white', document.getElementById('sw-white'));
+  else setTextColor('black', document.getElementById('sw-black'));
+  localStorage.setItem('theme', t);
+}
+function setTextColor(c, el){
+  document.body.classList.remove('tc-white','tc-black','tc-gold','tc-beige');
+  document.body.classList.add('tc-'+c);
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+  if(el) el.classList.add('active');
+  localStorage.setItem('textColor', c);
+}
+// Load saved settings
+(function(){
+  const t = localStorage.getItem('theme') || 'dark';
+  const c = localStorage.getItem('textColor');
+  const l = localStorage.getItem('lang');
+  setTheme(t);
+  if(c){ setTextColor(c, document.getElementById('sw-'+c)); }
+  if(l){ currentLang = l; applyLang(); }
+})();
+
+// ── STATE ──
+let currentBook = 'bukhari';
+let allHadiths = [];
+let filtered = [];
+let shownCount = 0;
+let isLoading = false;
+let aiLoading = false;
+let searchTimer = null;
+const PAGE = 15;
+
+// Grade detection
+function detectGrade(gradeStr) {
+  if (!gradeStr) return null;
+  const g = gradeStr.toLowerCase();
+  if (g.includes('صحيح') || g.includes('sahih')) return {label: gradeStr, cls: 'grade-sahih'};
+  if (g.includes('حسن') || g.includes('hasan')) return {label: gradeStr, cls: 'grade-hasan'};
+  if (g.includes('موضوع') || g.includes('mawdu')) return {label: gradeStr, cls: 'grade-mawdoo'};
+  if (g.includes('ضعيف') || g.includes('weak') || g.includes('da\'if')) return {label: gradeStr, cls: 'grade-daif'};
+  return {label: gradeStr, cls: 'grade-hasan'};
+}
+
+// ── NAV ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('tab-' + page).classList.add('active');
+  if (page === 'browse' && allHadiths.length === 0) loadHadiths();
+}
+
+// ── LOAD HADITHS ──
+async function loadHadiths() {
+  if (isLoading) return;
+  isLoading = true;
+  allHadiths = []; filtered = []; shownCount = 0;
+  showSkeletons();
+  document.getElementById('statusBar').textContent = 'جاري تحميل الأحاديث...';
+  document.getElementById('loadMoreBtn').style.display = 'none';
+
+  const bookId = currentBook === 'bukhari' ? 'bukhari' : 'muslim';
+  const bookName = currentBook === 'bukhari' ? 'صحيح البخاري' : 'صحيح مسلم';
+
+  // Try sunnah.com API
+  try {
+    let page = 1;
+    let hasMore = true;
+    let total = 0;
+
+    // Load first batch
+    const res = await fetch(
+      `https://api.sunnah.com/v1/collections/${bookId}/hadiths?limit=100&page=1`,
+      { headers: { 'X-API-Key': 'SqD712P3E82xFyMKN763UmaofVqQGpA5Nkpd6v4a' } }
+    );
+    if (!res.ok) throw new Error('API fail');
+    const data = await res.json();
+    total = data.total || 0;
+
+    const parsed = parseHadiths(data.data || [], bookName);
+    allHadiths = parsed;
+    filtered = [...allHadiths];
+    renderHadiths(true);
+    document.getElementById('statusBar').textContent = `تم تحميل ${allHadiths.length} حديث من أصل ${total} • ${bookName}`;
+
+    isLoading = false;
+
+    // Load remaining in background
+    if (total > 100) {
+      loadAllPages(bookId, bookName, total, 2);
+    }
+  } catch(e) {
+    // Fallback: jsdelivr CDN
+    try {
+      const edition = currentBook === 'bukhari' ? 'ara-bukhari' : 'ara-muslim';
+      const res2 = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/${edition}.min.json`);
+      if (!res2.ok) throw new Error('CDN fail');
+      const data2 = await res2.json();
+      const hadiths = data2.hadiths || [];
+      allHadiths = hadiths.map(h => ({
+        num: h.hadithnumber,
+        arabic: h.text,
+        english: '',
+        narrator: h.reference || '',
+        grade: '',
+        chapter: h.chapter || '',
+        book: bookName
+      }));
+      filtered = [...allHadiths];
+      renderHadiths(true);
+      document.getElementById('statusBar').textContent = `${allHadiths.length} حديث • ${bookName}`;
+      isLoading = false;
+    } catch(e2) {
+      useSampleData(bookName);
+      isLoading = false;
+    }
+  }
+}
+
+async function loadAllPages(bookId, bookName, total, startPage) {
+  const pages = Math.ceil(total / 100);
+  for (let p = startPage; p <= pages; p++) {
+    try {
+      const res = await fetch(
+        `https://api.sunnah.com/v1/collections/${bookId}/hadiths?limit=100&page=${p}`,
+        { headers: { 'X-API-Key': 'SqD712P3E82xFyMKN763UmaofVqQGpA5Nkpd6v4a' } }
+      );
+      if (!res.ok) break;
+      const data = await res.json();
+      const parsed = parseHadiths(data.data || [], bookName);
+      allHadiths = [...allHadiths, ...parsed];
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) {
+        filtered = [...allHadiths];
+        document.getElementById('statusBar').textContent = `تم تحميل ${allHadiths.length} حديث من أصل ${total} • ${bookName}`;
+        updateLoadMore();
+      }
+      await new Promise(r => setTimeout(r, 300));
+    } catch { break; }
+  }
+}
+
+function parseHadiths(data, bookName) {
+  return data.map(h => {
+    const arBody = h.hadith?.find(x => x.lang === 'ar')?.body || h.hadith?.[0]?.body || '';
+    const enBody = h.hadith?.find(x => x.lang === 'en')?.body || h.hadith?.[1]?.body || '';
+    const grades = h.hadith?.find(x => x.lang === 'en')?.grades || h.hadith?.[0]?.grades || [];
+    const gradeStr = grades[0]?.grade || '';
+    const narrator = h.hadith?.find(x => x.lang === 'en')?.narratedBy || '';
+    const chapter = h.chapter?.chapterArabic || h.chapter?.chapterEnglish || '';
+    return {
+      num: h.hadithNumber || h.id,
+      arabic: arBody,
+      english: enBody,
+      narrator: narrator,
+      grade: gradeStr,
+      chapter: chapter,
+      book: bookName
+    };
+  });
+}
+
+// ── RENDER ──
+function showSkeletons() {
+  const list = document.getElementById('hadithList');
+  list.innerHTML = Array(5).fill(`
+    <div class="skel-card">
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div class="skeleton" style="height:22px;width:70px;"></div>
+        <div class="skeleton" style="height:22px;width:90px;"></div>
+        <div class="skeleton" style="height:22px;width:60px;margin-right:auto;"></div>
+      </div>
+      <div class="skeleton" style="height:70px;width:100%;margin-bottom:10px;"></div>
+      <div class="skeleton" style="height:40px;width:85%;"></div>
+    </div>
+  `).join('');
+}
+
+function renderHadiths(reset) {
+  const list = document.getElementById('hadithList');
+  if (reset) { list.innerHTML = ''; shownCount = 0; }
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><p>لا توجد نتائج</p></div>`;
+    document.getElementById('loadMoreBtn').style.display = 'none';
+    return;
+  }
+  const slice = filtered.slice(shownCount, shownCount + PAGE);
+  slice.forEach((h, i) => {
+    const card = document.createElement('div');
+    card.className = 'hadith-card';
+    card.style.animationDelay = (i * 0.04) + 's';
+    const grade = detectGrade(h.grade);
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-header-right">
+          <span class="card-num">حديث ${h.num}</span>
+          <span class="card-book">${h.book}</span>
+          ${h.chapter ? `<span class="card-chapter">• ${h.chapter}</span>` : ''}
+        </div>
+        ${grade ? `<span class="grade-badge ${grade.cls}">${grade.label}</span>` : ''}
+      </div>
+      <div class="hadith-arabic">${h.arabic || '—'}</div>
+      ${h.english ? `<div class="hadith-english">${h.english}</div>` : ''}
+      ${h.narrator ? `<div class="card-narrator">📌 رواه: <span>${h.narrator}</span></div>` : ''}
+    `;
+    list.appendChild(card);
+  });
+  shownCount += slice.length;
+  updateLoadMore();
+}
+
+function updateLoadMore() {
+  const btn = document.getElementById('loadMoreBtn');
+  btn.style.display = shownCount < filtered.length ? 'block' : 'none';
+}
+
+function loadMore() { renderHadiths(false); }
+
+function selectBook(book) {
+  if (currentBook === book && allHadiths.length > 0) return;
+  currentBook = book;
+  document.querySelectorAll('.book-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('btab-' + book).classList.add('active');
+  document.getElementById('searchInput').value = '';
+  loadHadiths();
+}
+
+// ── SEARCH ──
+function debounceSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(applySearch, 280);
+}
+function applySearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { filtered = [...allHadiths]; }
+  else {
+    const ql = q.toLowerCase();
+    filtered = allHadiths.filter(h =>
+      (h.arabic||'').includes(q) ||
+      (h.english||'').toLowerCase().includes(ql) ||
+      (h.narrator||'').toLowerCase().includes(ql) ||
+      (h.chapter||'').includes(q) ||
+      String(h.num).includes(q)
+    );
+  }
+  renderHadiths(true);
+  document.getElementById('statusBar').textContent = q
+    ? `${filtered.length} نتيجة من ${allHadiths.length} حديث`
+    : `${allHadiths.length} حديث`;
+}
+
+// ── SAMPLE DATA ──
+function useSampleData(bookName) {
+  allHadiths = [
+    {num:1, arabic:'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى', english:'Actions are judged by intentions, and every person will get what they intended.', narrator:'عمر بن الخطاب', grade:'صحيح', chapter:'بدء الوحي', book:bookName},
+    {num:2, arabic:'الإِسْلاَمُ أَنْ تَشْهَدَ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ', english:'Islam is to testify that there is no god but Allah and that Muhammad is the Messenger of Allah.', narrator:'عبدالله بن عمر', grade:'صحيح', chapter:'الإيمان', book:bookName},
+    {num:3, arabic:'الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ', english:'A Muslim is one from whose tongue and hand the Muslims are safe.', narrator:'عبدالله بن عمرو', grade:'صحيح', chapter:'الإيمان', book:bookName},
+    {num:4, arabic:'لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ', english:'None of you truly believes until he loves for his brother what he loves for himself.', narrator:'أنس بن مالك', grade:'صحيح', chapter:'الإيمان', book:bookName},
+    {num:5, arabic:'الدِّينُ النَّصِيحَةُ، قُلْنَا لِمَنْ؟ قَالَ لِلَّهِ وَلِكِتَابِهِ وَلِرَسُولِهِ وَلأَئِمَّةِ الْمُسْلِمِينَ وَعَامَّتِهِمْ', english:'Religion is sincerity. We said: To whom? He said: To Allah, His Book, His Messenger, and to the leaders and common folk of Muslims.', narrator:'تميم الداري', grade:'صحيح', chapter:'الإيمان', book:bookName},
+  ];
+  filtered = [...allHadiths];
+  renderHadiths(true);
+  document.getElementById('statusBar').textContent = `عرض تجريبي • ${bookName}`;
+}
+
+// ── AI CHAT ──
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function quickAsk(t){document.getElementById('chatInput').value=t;sendMessage();}
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function addMsg(role, html) {
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="msg-avatar">${role==='ai'?'🕌':'👤'}</div><div class="msg-bubble">${html}</div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function addTyping() {
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = 'typingMsg';
+  div.innerHTML = `<div class="msg-avatar">🕌</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const btn = document.getElementById('sendBtn');
+  const text = input.value.trim();
+  if (!text || aiLoading) return;
+  aiLoading = true; btn.disabled = true;
+  addMsg('user', escHtml(text));
+  input.value = ''; input.style.height = 'auto';
+  addTyping();
+
+  try {
+    const sys = `أنت عالم متخصص في علوم الحديث النبوي الشريف. مهمتك مساعدة المستخدمين في:
+1. التحقق من صحة الأحاديث وذكر درجتها بدقة (صحيح، حسن، ضعيف، موضوع).
+2. إكمال الأحاديث الناقصة مع ذكر الراوي والمصدر.
+3. البحث عن الأحاديث بالمعنى وإعطاء النص الكامل.
+4. ذكر من روى الحديث وعن من روى.
+
+قواعد التنسيق:
+- ضع نص الحديث العربي بين: [HADITH]نص الحديث[/HADITH]
+- ضع درجة الحديث بين: [GRADE]الدرجة[/GRADE]
+- اذكر دائماً: المصدر (البخاري، مسلم...) + رقم الحديث + الراوي.
+- إذا كان الحديث ضعيفاً أو موضوعاً وضّح ذلك بجلاء.
+- إذا لم تكن متأكداً قل ذلك وانصح بمراجعة أهل العلم.
+- أجب بلغة المستخدم (عربي أو إنجليزي).`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: sys,
+        messages: [{role:'user', content: text}]
+      })
+    });
+    const data = await res.json();
+    let raw = data.content?.map(c=>c.text||'').join('') || 'عذراً، حدث خطأ.';
+
+    raw = raw.replace(/\[HADITH\]([\s\S]*?)\[\/HADITH\]/g, (_,h) =>
+      `<div class="hadith-result">${escHtml(h.trim())}</div>`);
+    raw = raw.replace(/\[GRADE\]([\s\S]*?)\[\/GRADE\]/g, (_,g) => {
+      const grade = g.trim();
+      let cls = 'hasan';
+      if(grade.includes('صحيح')||grade.toLowerCase().includes('sahih')) cls='sahih';
+      else if(grade.includes('ضعيف')||grade.includes('موضوع')||grade.toLowerCase().includes('weak')) cls='daif';
+      return `<span class="badge ${cls}">${escHtml(grade)}</span>`;
+    });
+    raw = raw.replace(/\n/g,'<br>');
+
+    document.getElementById('typingMsg')?.remove();
+    addMsg('ai', raw);
+  } catch {
+    document.getElementById('typingMsg')?.remove();
+    addMsg('ai','⚠️ حدث خطأ في الاتصال. تأكد من اتصالك بالإنترنت وحاول مجدداً.');
+  }
+  aiLoading = false; btn.disabled = false;
+}
+</script>
+</body>
+</html>
